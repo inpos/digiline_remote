@@ -9,7 +9,7 @@ _____  ______ |__|
 
 function digiline_remote:send_to_node(pos, channel, msg, radius--[[, nodenames]])
 	if not tonumber(radius) then
-		radius = 3
+		return
 	end
 	--~ if not nodenames then
 		local nodenames = {"group:digiline_remote_receive"}
@@ -28,7 +28,7 @@ end
 
 function digiline_remote:send_to_entity(pos, channel, msg, radius)
 	if not tonumber(radius) then
-		radius = 3
+		return
 	end
 	if radius < 0 then
 		radius = -radius
