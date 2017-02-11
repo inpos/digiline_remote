@@ -29,11 +29,12 @@ minetest.register_node("digiline_remote:antenna", {
 	end,
 	on_receive_fields = function(pos, formname, fields, sender)
 		local meta = minetest.get_meta(pos)
-		if fields.radius ~= nil and fields.radius ~= "" then
+		if fields.radius and fields.radius ~= "" then
 			if tonumber(fields.radius) then
 				meta:set_string("radius", fields.radius)
 			else
-				minetest.chat_send_player(sender:get_player_name(), "The radius has to be a number.")
+				minetest.chat_send_player(sender:get_player_name(),
+						"The radius has to be a number.")
 			end
 		end
 	end,
