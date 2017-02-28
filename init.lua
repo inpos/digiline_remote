@@ -7,6 +7,8 @@
      \/   /_____/                 \/     \/_____/           \/      \/                 \/
 --]]
 
+local load_time_start = os.clock()
+
 digiline_remote = {}
 
 local MODNAME = "digiline_remote"
@@ -15,3 +17,12 @@ dofile(MODPATH.."/api.lua")
 dofile(MODPATH.."/antenna.lua")
 dofile(MODPATH.."/rc.lua")
 dofile(MODPATH.."/test.lua")
+
+
+local time = math.floor(tonumber(os.clock()-load_time_start)*100+0.5)/100
+local msg = "[digiline_remote] loaded after ca. "..time
+if time > 0.05 then
+	print(msg)
+else
+	minetest.log("info", msg)
+end
