@@ -51,7 +51,7 @@ minetest.register_craftitem("digiline_remote:rc",{
 	on_use = function(itemstack, user, pointed_thing)
 		local meta = itemstack:get_meta()
 		if meta:get_string("send_nodes") == "true" then
-			digiline_remote:send_to_node(
+			digiline_remote.send_to_node(
 					user:getpos(),
 					meta:get_string("channel"),
 					meta:get_string("msg"),
@@ -60,7 +60,7 @@ minetest.register_craftitem("digiline_remote:rc",{
 				)
 		end
 		if meta:get_string("send_entities") == "true" then
-			digiline_remote:send_to_entity(
+			digiline_remote.send_to_entity(
 					user:getpos(),
 					meta:get_string("channel"),
 					meta:get_string("msg"),

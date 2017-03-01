@@ -18,7 +18,7 @@ minetest.register_node("digiline_remote:antenna", {
 			action = function(pos, node, channel, msg)
 				local meta = minetest.get_meta(pos)
 				local radius = tonumber(meta:get_string("radius"))
-				digiline_remote:send_to_entity(pos, channel, msg, radius)
+				digiline_remote.send_to_entity(pos, channel, msg, radius)
 			end
 		},
 	},

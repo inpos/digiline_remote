@@ -46,7 +46,7 @@ _____  ______ |__|
 	--~ return t
 --~ end
 
-function digiline_remote:send_to_node(pos, channel, msg, radius--[[, nodenames]])
+function digiline_remote.send_to_node(pos, channel, msg, radius--[[, nodenames]])
 	if not tonumber(radius) then
 		return
 	end
@@ -66,7 +66,7 @@ function digiline_remote:send_to_node(pos, channel, msg, radius--[[, nodenames]]
 	end
 end
 
-function digiline_remote:send_to_entity(pos, channel, msg, radius)
+function digiline_remote.send_to_entity(pos, channel, msg, radius)
 	if not tonumber(radius) then
 		return
 	end
