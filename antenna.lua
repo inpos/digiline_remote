@@ -12,7 +12,7 @@ minetest.register_node("digiline_remote:antenna", {
 	tiles = {"default_steel_block.png^digiline_remote_waves.png"},
 	groups = {cracky=3, stone=1, digiline_remote_receive = 1},
 	sounds = default.node_sound_stone_defaults(),
-	digiline = {
+	digilines = {
 		receptor = {action = function() end},
 		effector = {
 			action = function(pos, node, channel, msg)
@@ -39,6 +39,6 @@ minetest.register_node("digiline_remote:antenna", {
 		end
 	end,
 	_on_digiline_remote_receive = function(pos, channel, msg)
-		digiline:receptor_send(pos, digiline.rules.default, channel, msg)
+		digilines.receptor_send(pos, digilines.rules.default, channel, msg)
 	end,
 })
