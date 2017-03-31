@@ -18,14 +18,27 @@ minetest.register_node("digiline_remote:antenna", {
 			action = function(pos, node, channel, msg)
 				local meta = minetest.get_meta(pos)
 				local radius = tonumber(meta:get_string("radius"))
-				digiline_remote.send_to_entity(pos, channel, msg, radius)
+				if meta:get_string("send_nodes") == "true" then
+					digiline_remote.send_to_node(pos, channel, msg, radius)
+				end
+				if meta:get_string("send_entities") == "true" then
+					digiline_remote.send_to_entity(pos, channel, msg, radius)
+				end
 			end
 		},
 	},
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos)
-		meta:set_string("formspec", "field[radius;radius;${radius}]")
+		meta:set_string("formspec",
+				"size[3,1]"..
+				"field[0.2,0.5;1,1;radius;radius;${radius}]"..
+				"label[2,0;send to:]"..
+				"checkbox[2,0.1;send_nodes;nodes]"..
+				"checkbox[2,0.4;send_entities;entities]"..
+				"button_exit[0.95,0.5;1,1;save;OK]")
 		meta:set_string("radius", "3")
+		meta:set_string("send_nodes", "false")
+		meta:set_string("send_entities", "false")
 	end,
 	on_receive_fields = function(pos, formname, fields, sender)
 		local meta = minetest.get_meta(pos)
@@ -36,6 +49,23 @@ minetest.register_node("digiline_remote:antenna", {
 				minetest.chat_send_player(sender:get_player_name(),
 						"The radius has to be a number.")
 			end
+		end
+		if fields.send_nodes ~= nil then
+			meta:set_string("send_nodes", fields.send_nodes)
+		end
+		if fields.send_entities ~= nil then
+			meta:set_string("send_entities", fields.send_entities)
+		end
+		if fields.send_entities ~= nil or fields.send_nodes ~= nil then
+			local b_nodes = fields.send_nodes or meta:get_string("send_nodes")
+			local b_ents = fields.send_entities or meta:get_string("send_entities")
+			meta:set_string("formspec",
+					"size[3,1]"..
+					"field[0.2,0.5;1,1;radius;radius;${radius}]"..
+					"label[2,0;send to:]"..
+					"checkbox[2,0.1;send_nodes;nodes;"..b_nodes.."]"..
+					"checkbox[2,0.4;send_entities;entities;"..b_ents.."]"..
+					"button_exit[0.95,0.5;1,1;save;OK]")
 		end
 	end,
 	_on_digiline_remote_receive = function(pos, channel, msg)
