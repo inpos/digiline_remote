@@ -1,0 +1,2 @@
+#Send digiline remote signals with an euclidean metric.
+digiline_remote_euc (Use Euclidean Metric) bool false
