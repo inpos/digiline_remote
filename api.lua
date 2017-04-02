@@ -47,13 +47,11 @@ local function get_nodes_inside_radius(pos, radius, nodenames)
 	return t
 end
 
-function digiline_remote.send_to_node(pos, channel, msg, radius--[[, nodenames]])
+function digiline_remote.send_to_node(pos, channel, msg, radius, ignore_self)
 	if not tonumber(radius) then
 		return
 	end
-	--~ if not nodenames then
-		local nodenames = {"group:digiline_remote_receive"}
-	--~ end
+	local nodenames = {"group:digiline_remote_receive"}
 	local nodes
 	if search_round then
 		nodes = get_nodes_inside_radius(pos, radius, nodenames)
@@ -64,15 +62,19 @@ function digiline_remote.send_to_node(pos, channel, msg, radius--[[, nodenames]]
 		nodes = minetest.find_nodes_in_area(minp, maxp, nodenames)
 	end
 	for i = 1, #nodes do
-		local n = minetest.registered_nodes[minetest.get_node(nodes[i]).name]
-		local f = n._on_digiline_remote_receive
-		if f then
-			f(nodes[i], channel, msg)
+		if ignore_self and vector.equals(nodes[i], pos) then
+			nodes[i] = nil
+		else
+			local n = minetest.registered_nodes[minetest.get_node(nodes[i]).name]
+			local f = n._on_digiline_remote_receive
+			if f then
+				f(nodes[i], channel, msg)
+			end
 		end
 	end
 end
 
-function digiline_remote.send_to_entity(pos, channel, msg, radius)
+function digiline_remote.send_to_entity(pos, channel, msg, radius, self)
 	if not tonumber(radius) then
 		return
 	end
@@ -89,7 +91,7 @@ function digiline_remote.send_to_entity(pos, channel, msg, radius)
 		e = find_entities_in_area(minp, maxp)
 	end
 	for i = 1, #e do
-		if not e[i]:is_player() then
+		if not e[i]:is_player() and (not self or e ~= self) then
 			local f = e[i]:get_luaentity()._on_digiline_remote_receive
 			if f then
 				f(e[i], channel, msg)

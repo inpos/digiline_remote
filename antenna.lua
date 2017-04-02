@@ -19,7 +19,7 @@ minetest.register_node("digiline_remote:antenna", {
 				local meta = minetest.get_meta(pos)
 				local radius = tonumber(meta:get_string("radius"))
 				if meta:get_string("send_nodes") == "true" then
-					digiline_remote.send_to_node(pos, channel, msg, radius)
+					digiline_remote.send_to_node(pos, channel, msg, radius, true)
 				end
 				if meta:get_string("send_entities") == "true" then
 					digiline_remote.send_to_entity(pos, channel, msg, radius)
