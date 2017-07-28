@@ -7,7 +7,8 @@ _____  ______ |__|
      \/|__|
 --]]
 
-local search_round = minetest.setting_getbool("digiline_remote_euc")
+local search_round = minetest.settings:get_bool("digiline_remote_euc")
+local max_radius = tonumber(minetest.settings:get("digiline_remote_max_radius")) or 16
 
 local function find_entities_in_area(minp, maxp)
 	local xyz = {"x", "y", "z"}
@@ -48,9 +49,10 @@ local function get_nodes_inside_radius(pos, radius, nodenames)
 end
 
 function digiline_remote.send_to_node(pos, channel, msg, radius, ignore_self)
-	if not tonumber(radius) then
+	if type(radius) ~= "number" then
 		return
 	end
+	radius = math.min(math.abs(radius), max_radius)
 	local nodenames = {"group:digiline_remote_receive"}
 	local nodes
 	if search_round then
@@ -75,12 +77,10 @@ function digiline_remote.send_to_node(pos, channel, msg, radius, ignore_self)
 end
 
 function digiline_remote.send_to_entity(pos, channel, msg, radius, self)
-	if not tonumber(radius) then
+	if type(radius) ~= "number" then
 		return
 	end
-	if radius < 0 then
-		radius = -radius
-	end
+	radius = math.min(math.abs(radius), max_radius)
 	local e
 	if search_round then
 		e = minetest.get_objects_inside_radius(pos, radius)

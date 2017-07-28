@@ -7,11 +7,13 @@ _____    _____/  |_  ____   ____   ____ _____
      \/     \/          \/     \/     \/     \/
 --]]
 
+local max_radius = tonumber(minetest.settings:get("digiline_remote_max_radius")) or 16
+
 minetest.register_node("digiline_remote:antenna", {
 	description = "Antenna",
 	tiles = {"default_steel_block.png^digiline_remote_waves.png"},
 	groups = {cracky=3, digiline_remote_receive = 1},
-	sounds = default.node_sound_stone_defaults(),
+	sounds = default.node_sound_metal_defaults(),
 	digiline = {
 		receptor = {action = function() end},
 		effector = {
@@ -43,8 +45,11 @@ minetest.register_node("digiline_remote:antenna", {
 	on_receive_fields = function(pos, formname, fields, sender)
 		local meta = minetest.get_meta(pos)
 		if fields.radius and fields.radius ~= "" then
-			if tonumber(fields.radius) then
-				meta:set_string("radius", fields.radius)
+			local radius = tonumber(fields.radius)
+			if radius then
+				radius = math.min(radius, max_radius)
+				radius = math.max(radius, -max_radius)
+				meta:set_string("radius", tostring(radius))
 			else
 				minetest.chat_send_player(sender:get_player_name(),
 						"The radius has to be a number.")

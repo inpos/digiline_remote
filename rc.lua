@@ -7,6 +7,8 @@ _______   ____
              \/
 --]]
 
+local max_radius = tonumber(minetest.settings:get("digiline_remote_max_radius")) or 16
+
 local rightclick = function(itemstack, user, pointed_thing)
 	local player_name = user:get_player_name()
 	local meta = itemstack:get_meta()
@@ -55,8 +57,7 @@ minetest.register_craftitem("digiline_remote:rc",{
 					user:getpos(),
 					meta:get_string("channel"),
 					meta:get_string("msg"),
-					meta:get_float("radius")--[[,
-					{"digiline_remote:antenna"}]]
+					meta:get_float("radius")
 				)
 		end
 		if meta:get_string("send_entities") == "true" then
@@ -71,7 +72,8 @@ minetest.register_craftitem("digiline_remote:rc",{
 })
 
 minetest.register_on_player_receive_fields(function(player, formname, fields)
-	if formname ~= "digiline_remote_rc"..player:get_player_name() then
+	local player_name = player:get_player_name()
+	if formname ~= "digiline_remote_rc"..player_name then
 		return
 	end
 	if fields.send_entities ~= nil then
@@ -94,10 +96,13 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	meta:set_string("channel", fields.channel)
 	meta:set_string("msg", fields.msg)
 	if fields.radius and fields.radius ~= "" then
-		if tonumber(fields.radius) then
-			meta:set_float("radius", tonumber(fields.radius))
+		local radius = tonumber(fields.radius)
+		if radius then
+			radius = math.min(radius, max_radius)
+			radius = math.max(radius, -max_radius)
+			meta:set_float("radius", radius)
 		else
-			minetest.chat_send_player(player:get_player_name(),
+			minetest.chat_send_player(player_name,
 					"The radius has to be a number.")
 		end
 	end
