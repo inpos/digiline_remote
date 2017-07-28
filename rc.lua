@@ -8,6 +8,7 @@ _______   ____
 --]]
 
 local rightclick = function(itemstack, user, pointed_thing)
+	local player_name = user:get_player_name()
 	local meta = itemstack:get_meta()
 	local metat = meta:to_table().fields or {}
 	if metat.channel == nil then
@@ -25,17 +26,16 @@ local rightclick = function(itemstack, user, pointed_thing)
 	if metat.send_entities ~= "true" then
 		metat.send_entities = "false"
 	end
-	minetest.show_formspec(user:get_player_name(),
-			"digiline_remote_rc"..user:get_player_name(),
-				"size[7,3.5]"..
-				"field[0.75,1;6,1;channel;Channel;"..metat.channel.."]"..
-				"field[0.75,2;6,1;msg;Message;"..metat.msg.."]"..
-				"field[0.75,3;1,1;radius;Radius;"..tostring(metat.radius).."]"..
-				"label[5,2.5;send to:]"..
-				"checkbox[5,2.6;send_nodes;nodes;"..metat.send_nodes.."]"..
-				"checkbox[5,3;send_entities;entities;"..metat.send_entities.."]"..
-				"button_exit[1.9,2.7;3,1;save;Save]"
-		)
+	minetest.show_formspec(player_name, "digiline_remote_rc"..player_name,
+			"size[7,3.5]"..
+			"field[0.75,1;6,1;channel;Channel;"..metat.channel.."]"..
+			"field[0.75,2;6,1;msg;Message;"..metat.msg.."]"..
+			"field[0.75,3;1,1;radius;Radius;"..tostring(metat.radius).."]"..
+			"label[5,2.5;send to:]"..
+			"checkbox[5,2.6;send_nodes;nodes;"..metat.send_nodes.."]"..
+			"checkbox[5,3;send_entities;entities;"..metat.send_entities.."]"..
+			"button_exit[1.9,2.7;3,1;save;Save]"
+	)
 end
 
 minetest.register_craftitem("digiline_remote:rc",{
@@ -70,38 +70,45 @@ minetest.register_craftitem("digiline_remote:rc",{
 	end,
 })
 
-minetest.register_on_player_receive_fields(
-	function(player, formname, fields)
-		if formname ~= "digiline_remote_rc"..player:get_player_name() then
-			return
-		end
-		if fields.send_entities ~= nil then
-			local item = player:get_wielded_item()
-			local meta = item:get_meta()
-			meta:set_string("send_entities", fields.send_entities)
-			player:set_wielded_item(item)
-		end
-		if fields.send_nodes ~= nil then
-			local item = player:get_wielded_item()
-			local meta = item:get_meta()
-			meta:set_string("send_nodes", fields.send_nodes)
-			player:set_wielded_item(item)
-		end
-		if not (fields.save or fields.key_enter) then
-			return
-		end
+minetest.register_on_player_receive_fields(function(player, formname, fields)
+	if formname ~= "digiline_remote_rc"..player:get_player_name() then
+		return
+	end
+	if fields.send_entities ~= nil then
 		local item = player:get_wielded_item()
 		local meta = item:get_meta()
-		meta:set_string("channel", fields.channel)
-		meta:set_string("msg", fields.msg)
-		if fields.radius and fields.radius ~= "" then
-			if tonumber(fields.radius) then
-				meta:set_float("radius", tonumber(fields.radius))
-			else
-				minetest.chat_send_player(player:get_player_name(),
-						"The radius has to be a number.")
-			end
-		end
+		meta:set_string("send_entities", fields.send_entities)
 		player:set_wielded_item(item)
 	end
-)
+	if fields.send_nodes ~= nil then
+		local item = player:get_wielded_item()
+		local meta = item:get_meta()
+		meta:set_string("send_nodes", fields.send_nodes)
+		player:set_wielded_item(item)
+	end
+	if not (fields.save or fields.key_enter) then
+		return
+	end
+	local item = player:get_wielded_item()
+	local meta = item:get_meta()
+	meta:set_string("channel", fields.channel)
+	meta:set_string("msg", fields.msg)
+	if fields.radius and fields.radius ~= "" then
+		if tonumber(fields.radius) then
+			meta:set_float("radius", tonumber(fields.radius))
+		else
+			minetest.chat_send_player(player:get_player_name(),
+					"The radius has to be a number.")
+		end
+	end
+	player:set_wielded_item(item)
+end)
+
+minetest.register_craft({
+	output = "digiline_remote:rc",
+	recipe = {
+		{"",                    "default:steel_ingot",          ""},
+		{"default:steel_ingot", "digiline_remote:antenna_item", "default:steel_ingot"},
+		{"",                    "default:steel_ingot",          ""},
+	},
+})

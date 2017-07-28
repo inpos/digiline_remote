@@ -8,9 +8,9 @@ _____    _____/  |_  ____   ____   ____ _____
 --]]
 
 minetest.register_node("digiline_remote:antenna", {
-	description = "antenna",
+	description = "Antenna",
 	tiles = {"default_steel_block.png^digiline_remote_waves.png"},
-	groups = {cracky=3, stone=1, digiline_remote_receive = 1},
+	groups = {cracky=3, digiline_remote_receive = 1},
 	sounds = default.node_sound_stone_defaults(),
 	digiline = {
 		receptor = {action = function() end},
@@ -71,4 +71,12 @@ minetest.register_node("digiline_remote:antenna", {
 	_on_digiline_remote_receive = function(pos, channel, msg)
 		digilines.receptor_send(pos, digilines.rules.default, channel, msg)
 	end,
+})
+
+minetest.register_craft({
+	output = "digiline_remote:antenna",
+	recipe = {
+		{"default:steel_ingot", "digiline_remote:antenna_item", "default:steel_ingot"},
+		{"default:steel_ingot", "digilines:wire_std_00000000",  "default:steel_ingot"},
+	},
 })
