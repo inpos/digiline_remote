@@ -10,7 +10,7 @@ _____    _____/  |_  ____   ____   ____ _____
 local max_radius = tonumber(minetest.settings:get("digiline_remote_max_radius")) or 16
 
 minetest.register_node("digiline_remote:antenna", {
-	description = "Antenna",
+	description = "Антенна",
 	tiles = {"default_steel_block.png^digiline_remote_waves.png"},
 	groups = {cracky=3, digiline_remote_receive = 1},
 	sounds = default.node_sound_metal_defaults(),

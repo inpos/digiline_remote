@@ -41,7 +41,7 @@ local rightclick = function(itemstack, user, pointed_thing)
 end
 
 minetest.register_craftitem("digiline_remote:rc",{
-	description = "Remote Control",
+	description = "Дистанционное управление",
 	inventory_image = "digiline_remote_rc.png",
 	stack_max = 1,
 	on_secondary_use = function(itemstack, user, pointed_thing)

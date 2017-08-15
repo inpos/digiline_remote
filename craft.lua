@@ -8,7 +8,7 @@ _/ ___\_  __ \__  \\   __\\   __\
 --]]
 
 minetest.register_craftitem("digiline_remote:antenna_item", {
-	description = "Antenna Crafting Component",
+	description = "Компонент для сборки антенны",
 	inventory_image = "digiline_remote_antenna.png",
 })
 
